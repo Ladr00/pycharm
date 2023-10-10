@@ -2,13 +2,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
 from .models import News, Category
 from .forms import NewsForm
+from .utils import MyMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class HomeNews(ListView):
+class HomeNews(ListView, MyMixin):
     model = News
     context_object_name = 'news'
     template_name = 'News/home_news_list.html'
     extra_context = {'title': 'Главная'}
+    mixin_group = 'hello world'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -38,7 +41,7 @@ class HomeNews(ListView):
 #     }
 #     return render(request, 'News/category.html', context=context)
 
-class NewsByCategory(ListView):
+class NewsByCategory(ListView, MyMixin):
     model = News
     template_name = 'News/home_news_list.html'
     context_object_name = 'news'
@@ -61,6 +64,7 @@ class ViewNews(DetailView):
 class AddNews(CreateView):
     form_class = NewsForm
     template_name = 'News/add_news.html'
+    login_url ='/admin/'
 
 # def view_news(request, news_id):
 #     #news_item = News.objects.get(pk=news_id)
